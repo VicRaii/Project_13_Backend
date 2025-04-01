@@ -162,28 +162,28 @@ const updateUserRole = async (req, res, next) => {
 
 const loginUser = async (req, res, next) => {
   try {
-    const { userName, password } = req.body
+    const { email, password } = req.body
 
-    if (!userName || !password) {
+    if (!email || !password) {
       return res
         .status(400)
-        .json({ message: 'Username and password are required' })
+        .json({ message: 'Email and password are required' })
     }
 
-    const user = await User.findOne({ userName })
+    const user = await User.findOne({ email })
     if (!user) {
-      return res.status(400).json({ message: 'User or password incorrect' })
+      return res.status(400).json({ message: 'Email or password incorrect' })
     }
 
     const isMatch = await bcrypt.compare(password, user.password)
     if (!isMatch) {
-      return res.status(400).json({ message: 'User or password incorrect' })
+      return res.status(400).json({ message: 'Email or password incorrect' })
     }
 
     const token = generateSign(user._id)
     return res.status(200).json({
       message: 'Login successful',
-      user: { id: user._id, userName: user.userName, role: user.role },
+      user: { id: user._id, email: user.email, role: user.role },
       token
     })
   } catch (error) {

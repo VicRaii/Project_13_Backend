@@ -11,12 +11,16 @@ const upload = require('../middleware/upload')
 const usersRouter = require('express').Router()
 
 usersRouter.get('/', getUsers)
-usersRouter.put('/role/:id', [isAdmin], updateUserRole)
-usersRouter.post('/register', upload.single('profilePicture'), registerUser)
+usersRouter.post(
+  '/register',
+  [upload('UserProfilePictures').single('image')],
+  registerUser
+)
 usersRouter.post('/login', loginUser)
+usersRouter.put('/role/:id', [isAdmin], updateUserRole)
 usersRouter.put(
   '/update',
-  [isAuth, upload.single('profilePicture')],
+  [isAuth, upload('UserProfilePictures').single('image')],
   updateUser
 )
 

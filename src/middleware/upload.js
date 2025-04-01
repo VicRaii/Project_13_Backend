@@ -2,28 +2,25 @@ const multer = require('multer')
 const cloudinary = require('cloudinary').v2
 const { CloudinaryStorage } = require('multer-storage-cloudinary')
 
-cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET
-})
-
-const storage = new CloudinaryStorage({
-  cloudinary: cloudinary,
-  params: async (req, file) => {
-    const folderName = req.body.folder || 'ProfilePictures'
-
-    if (!file.mimetype.startsWith('image/')) {
-      throw new Error('El archivo debe ser una imagen')
+const createCloudinaryStorage = (defaultFolder = 'DefaultFolder') => {
+  return new CloudinaryStorage({
+    cloudinary: cloudinary,
+    params: async (req, file) => {
+      const folderName = req.query.folder || defaultFolder // ⚠️ Usa req.query en vez de req.body
+      console.log('Uploading to folder:', folderName) // Debugging log
+      return {
+        folder: folderName,
+        allowed_formats: ['jpg', 'png', 'gif', 'jpeg', 'webp']
+      }
     }
+  })
+}
 
-    return {
-      folder: folderName,
-      allowed_formats: ['jpg', 'png', 'gif', 'jpeg', 'webp', 'avif']
-    }
-  }
-})
+const upload = (folderName) => {
+  const storage = createCloudinaryStorage(folderName)
+  return multer({ storage })
+}
 
-const upload = multer({ storage })
+//!!!!! FIXEAR FORMDATA Y LA CREACIÓN DE CARPETAS EN CLOUDINARY
 
 module.exports = upload
