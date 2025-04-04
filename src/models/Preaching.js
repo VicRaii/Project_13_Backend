@@ -6,7 +6,7 @@ const preachingSchema = new mongoose.Schema(
     preacher: { type: String, required: true },
     date: { type: Date, required: true },
     content: { type: String, required: true },
-    cideoUrl: { type: String },
+    videoUrl: { type: String },
     createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }
   },
   { timestamps: true }
