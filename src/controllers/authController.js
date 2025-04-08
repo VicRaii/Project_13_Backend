@@ -58,7 +58,6 @@ const registerUser = async (req, res, next) => {
       role: 'user'
     })
 
-    // Guardar usuario
     let userSaved
     try {
       userSaved = await newUser.save()
@@ -67,7 +66,7 @@ const registerUser = async (req, res, next) => {
       return res.status(500).json({ message: 'Failed to save user' })
     }
 
-    const token = generateSign(userSaved._id) //!
+    const token = generateSign(userSaved._id)
 
     return res.status(201).json({
       message: 'Registration successful',
@@ -133,33 +132,6 @@ const updateUser = async (req, res, next) => {
   }
 }
 
-const updateUserRole = async (req, res, next) => {
-  try {
-    const { id } = req.params
-    const { role } = req.body
-
-    const validRoles = ['admin', 'user']
-    if (!validRoles.includes(role)) {
-      return res.status(400).json({
-        message: `Invalid role. Allowed roles: ${validRoles.join(', ')}`
-      })
-    }
-
-    const user = await User.findById(id)
-    if (!user) {
-      return res.status(404).json({ message: 'User not found' })
-    }
-
-    user.role = role
-    const updatedUser = await user.save()
-    return res
-      .status(200)
-      .json({ message: 'User role updated successfully', user: updatedUser })
-  } catch (error) {
-    next(error)
-  }
-}
-
 const loginUser = async (req, res, next) => {
   try {
     const { email, password } = req.body
@@ -198,6 +170,5 @@ module.exports = {
   getUsers,
   registerUser,
   loginUser,
-  updateUser,
-  updateUserRole
+  updateUser
 }

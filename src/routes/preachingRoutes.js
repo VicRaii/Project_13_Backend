@@ -1,6 +1,8 @@
 const {
   getPreachings,
-  createPreaching
+  createPreaching,
+  updatePreaching,
+  deletePreaching
 } = require('../controllers/preachingController')
 const { isAuth } = require('../middleware/auth')
 
@@ -8,5 +10,7 @@ const preachingsRouter = require('express').Router()
 
 preachingsRouter.get('/', getPreachings)
 preachingsRouter.post('/', [isAuth], createPreaching)
+preachingsRouter.put('/:id', [isAuth], updatePreaching)
+preachingsRouter.delete('/:id', [isAuth], deletePreaching)
 
 module.exports = preachingsRouter

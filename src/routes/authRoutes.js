@@ -1,11 +1,10 @@
 const {
   getUsers,
-  updateUserRole,
   registerUser,
   loginUser,
   updateUser
 } = require('../controllers/authController')
-const { isAdmin, isAuth } = require('../middleware/auth')
+const { isAuth } = require('../middleware/auth')
 const upload = require('../middleware/upload')
 
 const usersRouter = require('express').Router()
@@ -17,9 +16,8 @@ usersRouter.post(
   registerUser
 )
 usersRouter.post('/login', loginUser)
-usersRouter.put('/role/:id', [isAdmin], updateUserRole)
 usersRouter.put(
-  '/update',
+  '/:id',
   [isAuth, upload('UserProfilePictures').single('image')],
   updateUser
 )
