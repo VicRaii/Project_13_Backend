@@ -6,6 +6,7 @@ const { connectDB } = require('../../config/db')
 const Preaching = require('../../models/Preaching')
 const Event = require('../../models/Event')
 const path = require('path')
+const Series = require('../../models/Series')
 
 const readCSV = (filePath) => {
   return new Promise((resolve, reject) => {
@@ -25,6 +26,7 @@ const seedDatabase = async () => {
     // Limpiar base de datos
     await Preaching.deleteMany()
     await Event.deleteMany()
+    await Series.deleteMany() // Limpiar la colección Series
 
     // Leer predicaciones
     const preachingsCSV = await readCSV(
@@ -61,6 +63,23 @@ const seedDatabase = async () => {
     }))
 
     await Event.insertMany(formattedEvents)
+
+    // Leer series
+    const seriesCSV = await readCSV(
+      path.join('src', 'utils', 'data', 'seriesData.csv')
+    )
+
+    const formattedSeries = seriesCSV.map((s) => ({
+      title: s.title,
+      description: s.description,
+      image: s.image,
+      videoURL: s.videoURL,
+      preachings: s.preachings
+        ? s.preachings.split(',').map((id) => preachingMap[id.trim()] || null)
+        : []
+    }))
+
+    await Series.insertMany(formattedSeries)
 
     console.log('✅ Base de datos sembrada correctamente')
     process.exit(0)
