@@ -1,29 +1,5 @@
 const Series = require('../models/Series')
 
-const getPaginatedSeries = async (req, res, next) => {
-  try {
-    const page = parseInt(req.query.page) || 1
-    const limit = parseInt(req.query.limit) || 6
-    const skip = (page - 1) * limit
-
-    const series = await Series.find()
-      .populate('preachings')
-      .sort({ createdAt: -1 })
-      .skip(skip)
-      .limit(limit)
-
-    const total = await Series.countDocuments()
-
-    res.json({
-      series,
-      currentPage: page,
-      totalPages: Math.ceil(total / limit)
-    })
-  } catch (error) {
-    next(error)
-  }
-}
-
 const getSeries = async (req, res) => {
   try {
     const series = await Series.find().populate('preachings')
@@ -33,4 +9,18 @@ const getSeries = async (req, res) => {
   }
 }
 
-module.exports = { getPaginatedSeries, getSeries }
+const getSeriesById = async (req, res) => {
+  try {
+    const { id } = req.params
+    const series = await Series.findById(id).populate
+
+    if (!series) {
+      return res.status(404).json({ message: 'Serie not found' })
+    }
+    res.status(200).json(series)
+  } catch (error) {
+    res.status(500).json({ message: 'Error getting series', error })
+  }
+}
+
+module.exports = { getSeries, getSeriesById }
