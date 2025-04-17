@@ -5,7 +5,8 @@
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon index.js",
-    "DataBaseSeed": "node ./src/utils/seeds/seed.js"
+    "DataBaseSeed": "node ./src/utils/scripts/seed.js",
+    "importData": "node ./src/utils/scripts/importData.js"
   },
   "keywords": [],
   "author": "",
@@ -16,6 +17,7 @@
     "cloudinary": "^1.41.3",
     "cors": "^2.8.5",
     "csv-parser": "^3.2.0",
+    "csvtojson": "^2.0.10",
     "dotenv": "^16.4.7",
     "express": "^5.1.0",
     "fs-extra": "^11.3.0",
