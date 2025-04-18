@@ -58,8 +58,18 @@ async function importData() {
       }
     })
 
-    // Insertar predicaciones
-    await Preaching.insertMany(updatedPreachings)
+    // Insertar predicaciones y actualizar la serie correspondiente
+    for (const preaching of updatedPreachings) {
+      const newPreaching = await Preaching.create(preaching)
+
+      if (newPreaching.series) {
+        await Series.findByIdAndUpdate(
+          newPreaching.series,
+          { $push: { preachings: newPreaching._id } },
+          { new: true }
+        )
+      }
+    }
 
     console.log('✅ Datos importados con relaciones correctamente')
     process.exit()

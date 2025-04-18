@@ -2,10 +2,14 @@ const Preaching = require('../models/Preaching')
 
 const getPreachings = async (req, res) => {
   try {
-    const preachings = await Preaching.find()
-    return res.status(200).json(preachings)
+    const preachings = await Preaching.find().select(
+      'title date videoUrl preacher content series'
+    )
+    res.status(200).json(preachings)
   } catch (error) {
-    return res.status(500).json({ message: 'Error getting preachings', error })
+    res
+      .status(500)
+      .json({ message: 'Error al obtener las predicaciones', error })
   }
 }
 
