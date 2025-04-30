@@ -5,8 +5,8 @@ const preachingSchema = new mongoose.Schema(
     title: { type: String, required: true },
     videoUrl: { type: String },
     date: { type: Date, required: true },
-    content: { type: String }, // <-- usa "content" si eso estás esperando en el front
-    preacher: { type: String }, // <-- este campo faltaba
+    content: { type: String },
+    preacher: { type: String },
     series: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Series'

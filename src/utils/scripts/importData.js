@@ -1,7 +1,7 @@
 require('dotenv').config()
 const mongoose = require('mongoose')
 const csv = require('csvtojson')
-const path = require('path') // Importar el módulo path
+const path = require('path')
 const Series = require('../../models/Series')
 const Preaching = require('../../models/Preaching')
 
@@ -20,7 +20,6 @@ const normalize = (str) => str?.trim().toLowerCase()
 
 async function importData() {
   try {
-    // Leer los archivos CSV
     const seriesData = await csv().fromFile(
       path.join(__dirname, '../data/seriesData.csv')
     )
@@ -28,20 +27,16 @@ async function importData() {
       path.join(__dirname, '../data/preachingsData.csv')
     )
 
-    // Limpiar colecciones anteriores (opcional)
     await Series.deleteMany({})
     await Preaching.deleteMany({})
 
-    // Insertar series
     const insertedSeries = await Series.insertMany(seriesData)
 
-    // Crear mapa: { titulo_normalizado: ObjectId }
     const seriesMap = {}
     insertedSeries.forEach((s) => {
       seriesMap[normalize(s.title)] = s._id
     })
 
-    // Mapear predicaciones con ObjectId correcto de la serie
     const updatedPreachings = preachingsData.map((p) => {
       const serieId = seriesMap[normalize(p.seriesTitle)]
       if (!serieId) {
@@ -58,7 +53,6 @@ async function importData() {
       }
     })
 
-    // Insertar predicaciones y actualizar la serie correspondiente
     for (const preaching of updatedPreachings) {
       const newPreaching = await Preaching.create(preaching)
 

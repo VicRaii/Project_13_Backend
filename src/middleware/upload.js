@@ -6,8 +6,8 @@ const createCloudinaryStorage = (defaultFolder = 'DefaultFolder') => {
   return new CloudinaryStorage({
     cloudinary: cloudinary,
     params: async (req, file) => {
-      const folderName = req.query.folder || defaultFolder // ⚠️ Usa req.query en vez de req.body
-      console.log('Uploading to folder:', folderName) // Debugging log
+      const folderName = req.query.folder || defaultFolder
+      console.log('Uploading to folder:', folderName)
       return {
         folder: folderName,
         allowed_formats: ['jpg', 'png', 'gif', 'jpeg', 'webp']

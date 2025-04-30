@@ -5,7 +5,6 @@
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon index.js",
-    "DataBaseSeed": "node ./src/utils/scripts/seed.js",
     "importData": "node ./src/utils/scripts/importData.js"
   },
   "keywords": [],
