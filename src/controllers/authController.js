@@ -153,6 +153,8 @@ const loginUser = async (req, res, next) => {
     }
 
     const token = generateSign(user._id)
+    console.log('USER BACKEND:', user)
+
     return res.status(200).json({
       message: 'Login successful',
       user: { id: user._id, email: user.email, role: user.role },
