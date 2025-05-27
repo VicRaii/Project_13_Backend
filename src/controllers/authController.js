@@ -86,7 +86,7 @@ const registerUser = async (req, res, next) => {
 
 const updateUser = async (req, res, next) => {
   try {
-    const { userName, email } = req.body
+    const { userName, email, role } = req.body // Añade role aquí
     const profilePicture = req.file ? req.file.path : null
 
     const user = await User.findById(req.user._id)
@@ -121,6 +121,10 @@ const updateUser = async (req, res, next) => {
     user.email = email || user.email
     if (profilePicture) {
       user.profilePicture = profilePicture
+    }
+    if (role && ['user', 'admin'].includes(role)) {
+      // Solo permite valores válidos
+      user.role = role
     }
 
     const updatedUser = await user.save()

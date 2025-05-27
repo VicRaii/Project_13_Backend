@@ -41,6 +41,27 @@ const postSeries = async (req, res) => {
   }
 }
 
+const updateSeries = async (req, res) => {
+  try {
+    const { id } = req.params
+    const { title, description, image } = req.body
+
+    const updatedSeries = await Series.findByIdAndUpdate(
+      id,
+      { title, description, image },
+      { new: true }
+    )
+
+    if (!updatedSeries) {
+      return res.status(404).json({ message: 'Serie no encontrada' })
+    }
+
+    res.status(200).json(updatedSeries)
+  } catch (error) {
+    res.status(500).json({ message: 'Error updating series', error })
+  }
+}
+
 const deleteSeries = async (req, res) => {
   try {
     const { id } = req.params
@@ -56,4 +77,10 @@ const deleteSeries = async (req, res) => {
   }
 }
 
-module.exports = { getSeries, getSeriesById, postSeries, deleteSeries }
+module.exports = {
+  getSeries,
+  getSeriesById,
+  postSeries,
+  updateSeries,
+  deleteSeries
+}
