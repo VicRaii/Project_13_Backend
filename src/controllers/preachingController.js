@@ -2,9 +2,9 @@ const Preaching = require('../models/Preaching')
 
 const getPreachings = async (req, res) => {
   try {
-    const preachings = await Preaching.find().select(
-      'title date videoUrl preacher content series'
-    )
+    const preachings = await Preaching.find()
+      .select('title date videoUrl preacher content series')
+      .populate('series', 'title')
     res.status(200).json(preachings)
   } catch (error) {
     res
@@ -15,13 +15,14 @@ const getPreachings = async (req, res) => {
 
 const createPreaching = async (req, res) => {
   try {
-    const { title, preacher, date, content, videoUrl } = req.body
+    const { title, preacher, date, content, videoUrl, series } = req.body
     const preaching = new Preaching({
       title,
       preacher,
       date,
       content,
       videoUrl,
+      series,
       createdBy: req.user._id
     })
     await preaching.save()
