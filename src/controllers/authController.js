@@ -182,7 +182,17 @@ const loginUser = async (req, res, next) => {
 
 const deleteUser = async (req, res, next) => {
   try {
-    const user = await User.findById(req.user._id)
+    // Solo el propio usuario o un admin puede borrar
+    if (
+      req.user._id.toString() !== req.params.id &&
+      req.user.role !== 'admin'
+    ) {
+      return res
+        .status(403)
+        .json({ message: 'No tienes permiso para borrar este usuario' })
+    }
+
+    const user = await User.findById(req.params.id)
     if (!user) {
       return res.status(404).json({ message: 'User not found' })
     }
@@ -192,7 +202,7 @@ const deleteUser = async (req, res, next) => {
       await cloudinary.uploader.destroy(publicId)
     }
 
-    await User.findByIdAndDelete(req.user._id)
+    await User.findByIdAndDelete(req.params.id)
 
     return res.status(200).json({ message: 'User deleted successfully' })
   } catch (error) {
