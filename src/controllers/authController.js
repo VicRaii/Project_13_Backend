@@ -86,12 +86,21 @@ const registerUser = async (req, res, next) => {
 
 const updateUser = async (req, res, next) => {
   try {
-    const { userName, email, role } = req.body // Añade role aquí
+    if (
+      req.user._id.toString() !== req.params.id &&
+      req.user.role !== 'admin'
+    ) {
+      return res
+        .status(403)
+        .json({ message: 'No tienes permiso para actualizar este usuario' })
+    }
+
+    const { userName, email, role } = req.body
     const profilePicture = req.file ? req.file.path : null
 
-    const user = await User.findById(req.user._id)
+    const user = await User.findById(req.params.id)
     if (!user) {
-      return res.status(404).json({ message: 'User not found' })
+      return res.status(404).json({ message: 'User not found or invalid' })
     }
 
     if (userName && userName !== user.userName) {
@@ -123,7 +132,6 @@ const updateUser = async (req, res, next) => {
       user.profilePicture = profilePicture
     }
     if (role && ['user', 'admin'].includes(role)) {
-      // Solo permite valores válidos
       user.role = role
     }
 
@@ -172,9 +180,31 @@ const loginUser = async (req, res, next) => {
   }
 }
 
+const deleteUser = async (req, res, next) => {
+  try {
+    const user = await User.findById(req.user._id)
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' })
+    }
+
+    if (user.profilePicture) {
+      const publicId = getPublicId(user.profilePicture)
+      await cloudinary.uploader.destroy(publicId)
+    }
+
+    await User.findByIdAndDelete(req.user._id)
+
+    return res.status(200).json({ message: 'User deleted successfully' })
+  } catch (error) {
+    console.error('Delete Error:', error)
+    next(error)
+  }
+}
+
 module.exports = {
   getUsers,
   registerUser,
   loginUser,
-  updateUser
+  updateUser,
+  deleteUser
 }

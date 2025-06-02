@@ -2,7 +2,8 @@ const {
   getUsers,
   registerUser,
   loginUser,
-  updateUser
+  updateUser,
+  deleteUser
 } = require('../controllers/authController')
 const { isAuth } = require('../middleware/auth')
 const upload = require('../middleware/upload')
@@ -16,10 +17,7 @@ usersRouter.post(
   registerUser
 )
 usersRouter.post('/login', loginUser)
-usersRouter.put(
-  '/:id',
-  [isAuth, upload('UserProfilePictures').single('image')],
-  updateUser
-)
+usersRouter.put('/:id', isAuth, updateUser)
+usersRouter.delete('/:id', isAuth, deleteUser)
 
 module.exports = usersRouter
