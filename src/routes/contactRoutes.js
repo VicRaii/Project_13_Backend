@@ -2,7 +2,8 @@ const {
   postContact,
   getContacts,
   deleteContact,
-  markAsRead
+  markAsRead,
+  replyToContact
 } = require('../controllers/contactController')
 
 const contactRouter = require('express').Router()
