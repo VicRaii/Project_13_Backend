@@ -7,12 +7,7 @@ const mainRouter = require('./src/routes/mainRouter')
 const app = express()
 
 app.use(express.json())
-app.use(
-  cors({
-    origin: ['http://localhost:5173', 'https://project-13-frontend.vercel.app'],
-    credentials: true
-  })
-)
+app.use(cors())
 
 connectDB()
 
